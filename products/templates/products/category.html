@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %} {{ category.name }} {% endblock title %}
+
+{% block content %}
+
+	<h4 class="alert alert-info text-center" style="margin: 15px 0 15px 0;">{{ category.name }}</h4>
+
+	{% for product in products %}
+		<div class="card col-lg-3 col-md-3 col-sm-3" style="display: inline-block;">
+
+        {% for image in product.product_image.all %}
+            {% if image.is_feature %}
+                {% thumbnail image.image "120x120" crop="center" as im %}
+            		<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ im.alt_text }}">
+        		{% endthumbnail %}
+            {% endif %}
+        {% endfor %}
+
+	        <div class="card-body">
+		        <h5 class="card-title">{{ product.title }}</h5>
+		        <h7 style="display: inline-block;float: right">${{ product.price }}</h7>
+		        <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Detail</a>
+	        </div>
+	    </div>
+	{% endfor %}
+
+
+<!--Pagination-->
+          <nav aria-label="Page navigation example" style="margin-top: 20px;">
+            <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+              </li>
+            {% else %}
+                <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+            {% endif %}
+
+            {% if products.number|add:'-4' > 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ products.number|add:'-5' }}">&hellip;</a></li>
+            {% endif %}
+
+            {% for i in products.paginator.page_range %}
+                {% if products.number == i %}
+                    <li class="page-item active" aria-current="page">
+                  <span class="page-link">
+                    {{ i }}
+                    <span class="sr-only">(current)</span>
+                  </span>
+                </li>
+                {% elif i > products.number|add:'-5' and i < products.number|add:'5' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if products.paginator.num_pages > products.number|add:'4' %}
+              <li class="page-item"><a class="page-link" href="?page={{ products.number|add:'5' }}">&hellip;</a></li>
+            {% endif %}
+
+            {% if products.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+              </li>
+            {% else %}
+                <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      <!--end of Pagination-->
+
+
+
+{% endblock content %}

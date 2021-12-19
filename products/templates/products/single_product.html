@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.title }}{% endblock title %}
+
+{% block content %}
+	<h4 class="text-center" style="margin-top: 15px;">{{ product.title }}</h4>
+	<hr>
+
+	{% for image in product.product_image.all %}
+		{% if image.is_feature %}
+			<img src="{{ image.image.url }}" width="250px" height="150px" 
+			class="mx-auto d-block" style="margin-top: 15px;" alt="{{ image.image.alt_text }}"><br>
+			<p>{{ product.description }}</p>
+		{% else %}
+			<img src="{{ image.image.url }}" width="150px" height="80px" 
+			class="mx-auto d-block-inline" style="margin-top: 15px;" alt="{{ image.image.alt_text }}">
+		{% endif %}
+	{% endfor %}
+
+<br><br>
+<form action="{% url 'carts:cart_add' product.id %}" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit" class="btn btn-success">Add to cart</button>
+</form>
+{% endblock content %}

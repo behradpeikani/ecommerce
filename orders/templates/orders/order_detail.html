@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Order Detail {% endblock title %}
+
+
+{% block content %}
+	<h1>Checkout</h1>
+	<p>${{ order.get_total_price }}</p>
+	<a href="{% url 'accounts:add_address' %}"><button class="btn btn-success">Submit</button></a>
+{% endblock content %}
